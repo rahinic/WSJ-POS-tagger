@@ -21,7 +21,7 @@ class WSJDataset(Dataset):
 
         return word_to_idx, pos_to_idx
 
-    def file_preprocessing(self) -> Tuple[List, List]:
+    def file_preprocessing(self, sentences) -> Tuple[List, List]:
 
         def word_to_idx_pipeline(x):
             sample_to_idx = [self.word_to_idx[tok] for tok in x]
@@ -30,7 +30,7 @@ class WSJDataset(Dataset):
             tags_to_idx = [self.pos_to_idx[pos] for pos in x]
             return torch.tensor(tags_to_idx, dtype=torch.int64)
 
-        sentences = treebank.tagged_sents()[:2700]
+        #sentences = treebank.tagged_sents()[:2700]
         list_of_lines, list_of_line_tags, samples_with_labels = [], [], []
 
         for sentence in sentences:
@@ -39,7 +39,11 @@ class WSJDataset(Dataset):
             for word_and_tags in sentence:
                current_line.append(word_and_tags[0])
                current_tags.append(word_and_tags[1])
-            
+            #checking
+            if len(current_line) != len(current_tags):
+                print("They don't match")
+                print(current_line)
+                print(current_tags)
             #padding
             if len(current_line) < 50:
                 for i in range(0,50-len(current_line)):
@@ -53,7 +57,7 @@ class WSJDataset(Dataset):
             list_of_line_tags.append(current_tags_to_idx)
 
         samples_with_labels.append(list(zip(list_of_lines, list_of_line_tags)))
-        print(samples_with_labels)
+        
         return samples_with_labels
 
     def __init__(self, myDataset=None):
@@ -64,7 +68,8 @@ class WSJDataset(Dataset):
         print("dictionary ready!")
 
         print("pre-processing the dataset...")
-        self.samples = self.file_preprocessing()
+        currentdataset = myDataset
+        self.samples = self.file_preprocessing(currentdataset)
         print("dataset ready!")
 
     def __len__(self):
@@ -74,10 +79,3 @@ class WSJDataset(Dataset):
         return self.samples[idx]
 
 ###############################
-mydataset = DataLoader(dataset=WSJDataset(), batch_size=16, shuffle=False)
-
-for idx,(sample) in enumerate(mydataset):
-    if idx>0:
-        break
-    print(len(sample[0][0]))
-    print(len(sample[0][1]))

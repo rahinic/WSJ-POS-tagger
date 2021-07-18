@@ -1,15 +1,18 @@
 # Dictionary of Penn Tree Bank sample size
 
-# Import Libraries
+# Step 0: Import Libraries
 
 import nltk
 from nltk.corpus import treebank
 import pickle
 
+from nltk.tokenize import word_tokenize
+
 print("creating and loading dictionaries...")
 # Step 1: List of words in this sample Penn Tree Bank WSJ corpus
 
 unique_word_list = list(set(treebank.words()))
+unique_word_list.append('PADDING')
 
 # Step 2: Create a dictionary of words and reverse look-up of words
 
@@ -26,6 +29,7 @@ for sentence in sentences:
         pos_tags_list.append(word[1])
 
 unique_pos_tags = list(set(pos_tags_list))
+unique_pos_tags.append("PADDING")
 
 pos_to_idx, idx_to_pos =  {}, {}
 

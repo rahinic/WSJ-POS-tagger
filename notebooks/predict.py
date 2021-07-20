@@ -16,11 +16,11 @@ idx_to_word, idx_to_pos = vocab.load_reverse_dictionaries()
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 100
 HIDDEN_DIM = 64
-NUM_LAYERS = 2
+NUM_LAYERS = 4
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 30
+N_EPOCHS = 50
 LEARNING_RATE = 0.01
-BATCH_SIZE = 16
+BATCH_SIZE = 128
 
 print(f"Our vocab size to the model is therefore: {VOCAB_SIZE}")
 ################################### 02. NN Model  ########################################
@@ -44,7 +44,7 @@ model.eval()
 print("Lets make predictions")
 
 sentences = treebank.tagged_sents()
-validation_dataset = DataLoader(dataset=WSJDataset(sentences[3701:]), batch_size=16, shuffle=True)
+validation_dataset = DataLoader(dataset=WSJDataset(sentences[3901:]), batch_size=128, shuffle=True)
 
 def predict(sentence, model):
 
@@ -101,9 +101,9 @@ print(f"Total Accuracy of our model is: {model_accuracy_precision()}%")
 # extract one example:
 for idx, sample in enumerate(validation_dataset):
 
-    if idx > 0:
+    if idx > 3:
         break
-    sentence, label = sample[2][0].tolist()[0], sample[2][1].tolist()[0]
+    sentence, label = sample[3][0].tolist()[0], sample[3][1].tolist()[0]
 
 # from this example, let us construct the words back again:
 
@@ -118,7 +118,7 @@ print("Example Sentence and its POS tags:\n" + f"{actual_sentence} \n {actual_la
 print("="*100)
 print("After token to index conversion of the labels:")
 print(f"{label}")
-example = sample[0][0]
+example = sample[3][0]
 probsy, predictions = predict(example, model)
 probsy_np = probsy.cpu().detach().numpy()
 probsy_np =  np.squeeze(probsy_np, axis=0)

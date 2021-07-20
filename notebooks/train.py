@@ -12,8 +12,8 @@ print("="*100)
 print("01. Preparing train/test datasets:")
 
 sentences = treebank.tagged_sents()
-train_dataset = DataLoader(dataset=WSJDataset(sentences[:2700]), batch_size=16, shuffle=True)
-test_dataset = DataLoader(dataset=WSJDataset(sentences[2701:3700]), batch_size=16, shuffle=True)
+train_dataset = DataLoader(dataset=WSJDataset(sentences[:3600]), batch_size=128, shuffle=True)
+test_dataset = DataLoader(dataset=WSJDataset(sentences[3601:3900]), batch_size=128, shuffle=True)
 
 print("datasets ready!")
 print("="*100)
@@ -27,11 +27,11 @@ word_to_idx, pos_to_idx = vocab.load_dictionaries()
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 100
 HIDDEN_DIM = 64
-NUM_LAYERS = 2
+NUM_LAYERS = 4
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 30
-LEARNING_RATE = 0.001
-BATCH_SIZE = 16
+N_EPOCHS = 50
+LEARNING_RATE = 0.01
+BATCH_SIZE = 128
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
 ##################################### 03. NN Model  ########################################
@@ -51,8 +51,8 @@ print("="*100)
 ############################# 04. Optimizer and Loss  ####################################
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
-# optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
+optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
+# optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
 criterion = nn.CrossEntropyLoss()
 
 #define metric

@@ -62,15 +62,16 @@ class WSJDataset(Dataset):
 
     def __init__(self, myDataset=None):
         
-        print("Preparing the dataset...")
-        print("loading dictionaries...")
+        print("(a) Preparing the dataset...")
+        print("(b) loading dictionaries...")
         self.word_to_idx, self.pos_to_idx = self.load_dictionaries()
         print("dictionary ready!")
 
-        print("pre-processing the dataset...")
+        print("(c) pre-processing the dataset...")
         currentdataset = myDataset
         self.samples = self.file_preprocessing(currentdataset)
         print("dataset ready!")
+        print("-"*100)
 
     def __len__(self):
         return len(self.samples)
@@ -79,3 +80,27 @@ class WSJDataset(Dataset):
         return self.samples[idx]
 
 ###############################
+class vocabulary():
+
+    def file_handling(self, filename: str):
+
+        filepath = "C:/Users/rahin/projects/WSJ-POS-tagger/data/raw/"+filename
+        file = open(filepath, "rb")
+        content = pickle.load(file)
+        file.close()
+
+        return content
+
+    def load_dictionaries(self):
+
+        word_to_idx = self.file_handling(filename="wsj_word_to_idx.pkl")
+        pos_to_idx = self.file_handling(filename="wsj_pos_to_idx.pkl")
+
+        return word_to_idx, pos_to_idx
+
+    def load_reverse_dictionaries(self):
+
+        idx_to_word = self.file_handling(filename="wsj_idx_to_word.pkl")
+        idx_to_pos = self.file_handling(filename="wsj_idx_to_pos.pkl")
+
+        return idx_to_word, idx_to_pos

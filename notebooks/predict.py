@@ -30,7 +30,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0.1,
+                            dropout=0.05,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")
@@ -103,7 +103,7 @@ for idx, sample in enumerate(validation_dataset):
 
     if idx > 3:
         break
-    sentence, label = sample[0][0].tolist()[0], sample[0][1].tolist()[0]
+    sentence, label = sample[5][0].tolist()[0], sample[5][1].tolist()[0]
 
 # from this example, let us construct the words back again:
 
@@ -118,7 +118,7 @@ print("Example Sentence and its POS tags:\n" + f"{actual_sentence} \n {actual_la
 print("="*100)
 print("After token to index conversion of the labels:")
 print(f"{label}")
-example = sample[0][0]
+example = sample[5][0]
 probsy, predictions = predict(example, model)
 probsy_np = probsy.cpu().detach().numpy()
 probsy_np =  np.squeeze(probsy_np, axis=0)

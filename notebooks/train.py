@@ -41,7 +41,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.1,
+                    dropout=0.05,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")

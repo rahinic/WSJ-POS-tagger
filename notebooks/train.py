@@ -27,7 +27,7 @@ word_to_idx, pos_to_idx = vocab.load_dictionaries()
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 256
 HIDDEN_DIM = 128
-NUM_LAYERS = 1
+NUM_LAYERS = 2
 NUM_OF_CLASSES = len(pos_to_idx)
 N_EPOCHS = 30
 LEARNING_RATE = 0.0001
@@ -41,7 +41,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.05,
+                    dropout=0.15,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")
@@ -51,9 +51,9 @@ print("="*100)
 ############################# 04. Optimizer and Loss  ####################################
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
-optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-# optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
+optimizer = optim.Adam(model.parameters())#, lr=LEARNING_RATE)
 criterion = nn.CrossEntropyLoss()
+
 
 #define metric
 def binary_accuracy(preds, y):

@@ -16,7 +16,7 @@ idx_to_word, idx_to_pos = vocab.load_reverse_dictionaries()
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 256
 HIDDEN_DIM = 128
-NUM_LAYERS = 1
+NUM_LAYERS = 2
 NUM_OF_CLASSES = len(pos_to_idx)
 N_EPOCHS = 30
 LEARNING_RATE = 0.0001
@@ -30,7 +30,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0.05,
+                            dropout=0.15,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")

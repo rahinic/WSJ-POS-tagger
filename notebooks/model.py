@@ -28,7 +28,7 @@ class RNNPOSTagger(nn.Module):
 
         self.fc = nn.Linear(hidden_dimension*2, output_dimension)
 
-        self.activation_fn = nn.Tanh()
+        self.activation_fn = nn.ReLU()
         
 
 
@@ -54,5 +54,5 @@ class RNNPOSTagger(nn.Module):
         #activation function
         outputs=self.activation_fn(dense_output)
  
-        return outputs
-        # return dense_output
+        # return outputs
+        return dense_output

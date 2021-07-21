@@ -14,13 +14,13 @@ idx_to_word, idx_to_pos = vocab.load_reverse_dictionaries()
 
 # read this seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html --> for understanding embedding dimension and output dimension  
 VOCAB_SIZE = len(word_to_idx)+1
-EMBED_DIM = 100
-HIDDEN_DIM = 64
-NUM_LAYERS = 4
+EMBED_DIM = 256
+HIDDEN_DIM = 128
+NUM_LAYERS = 1
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 50
-LEARNING_RATE = 0.01
-BATCH_SIZE = 128
+N_EPOCHS = 30
+LEARNING_RATE = 0.0001
+BATCH_SIZE = 256
 
 print(f"Our vocab size to the model is therefore: {VOCAB_SIZE}")
 ################################### 02. NN Model  ########################################
@@ -30,7 +30,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0.2,
+                            dropout=0.1,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")
@@ -44,7 +44,7 @@ model.eval()
 print("Lets make predictions")
 
 sentences = treebank.tagged_sents()
-validation_dataset = DataLoader(dataset=WSJDataset(sentences[3901:]), batch_size=128, shuffle=True)
+validation_dataset = DataLoader(dataset=WSJDataset(sentences[3901:]), batch_size=256, shuffle=True)
 
 def predict(sentence, model):
 
@@ -103,7 +103,7 @@ for idx, sample in enumerate(validation_dataset):
 
     if idx > 3:
         break
-    sentence, label = sample[3][0].tolist()[0], sample[3][1].tolist()[0]
+    sentence, label = sample[0][0].tolist()[0], sample[0][1].tolist()[0]
 
 # from this example, let us construct the words back again:
 
@@ -118,7 +118,7 @@ print("Example Sentence and its POS tags:\n" + f"{actual_sentence} \n {actual_la
 print("="*100)
 print("After token to index conversion of the labels:")
 print(f"{label}")
-example = sample[3][0]
+example = sample[0][0]
 probsy, predictions = predict(example, model)
 probsy_np = probsy.cpu().detach().numpy()
 probsy_np =  np.squeeze(probsy_np, axis=0)

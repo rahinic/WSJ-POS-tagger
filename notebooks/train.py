@@ -12,8 +12,8 @@ print("="*100)
 print("01. Preparing train/test datasets:")
 
 sentences = treebank.tagged_sents()
-train_dataset = DataLoader(dataset=WSJDataset(sentences[:3600]), batch_size=128, shuffle=True)
-test_dataset = DataLoader(dataset=WSJDataset(sentences[3601:3900]), batch_size=128, shuffle=True)
+train_dataset = DataLoader(dataset=WSJDataset(sentences[:3600]), batch_size=256, shuffle=True)
+test_dataset = DataLoader(dataset=WSJDataset(sentences[3601:3900]), batch_size=256, shuffle=True)
 
 print("datasets ready!")
 print("="*100)
@@ -25,13 +25,13 @@ word_to_idx, pos_to_idx = vocab.load_dictionaries()
 
 # read this seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html --> for understanding embedding dimension and output dimension  
 VOCAB_SIZE = len(word_to_idx)+1
-EMBED_DIM = 100
-HIDDEN_DIM = 64
-NUM_LAYERS = 4
+EMBED_DIM = 256
+HIDDEN_DIM = 128
+NUM_LAYERS = 1
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 50
-LEARNING_RATE = 0.01
-BATCH_SIZE = 128
+N_EPOCHS = 30
+LEARNING_RATE = 0.0001
+BATCH_SIZE = 256
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
 ##################################### 03. NN Model  ########################################
@@ -41,7 +41,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.2,
+                    dropout=0.1,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")

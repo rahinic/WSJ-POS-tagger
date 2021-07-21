@@ -14,9 +14,9 @@ idx_to_word, idx_to_pos = vocab.load_reverse_dictionaries()
 
 # read this seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html --> for understanding embedding dimension and output dimension  
 VOCAB_SIZE = len(word_to_idx)+1
-EMBED_DIM = 256
+EMBED_DIM = 200
 HIDDEN_DIM = 128
-NUM_LAYERS = 2
+NUM_LAYERS = 1
 NUM_OF_CLASSES = len(pos_to_idx)
 N_EPOCHS = 30
 LEARNING_RATE = 0.0001
@@ -30,7 +30,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0.15,
+                            dropout=0.005,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")

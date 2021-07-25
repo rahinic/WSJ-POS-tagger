@@ -25,20 +25,20 @@ class myDataset(Dataset):
     def file_tensor(self, sentences_and_tags) -> Tuple[List, List]:
 
         def token_pipeline(x):
-            if len(x) < 60:
-                for i in range(0,60-len(x)):
-                    x.append('PADD')
+            if len(x) < 50:
+                for i in range(0,50-len(x)):
+                    x.append('PADDING')
             return [self.word_to_idx[tok] for tok in x]
 
         def pos_pipeline(x):
-            if len(x) < 60:
-                for i in range(0,60-len(x)):
-                    x.append('PADD')
+            if len(x) < 50:
+                for i in range(0,50-len(x)):
+                    x.append('PADDING')
             return [self.pos_to_idx[pos] for pos in x]
 
         sent_to_idx, tags_to_idx = [], []
         for sent_tag in sentences_and_tags:
-            if len(sent_tag[0]) >60:
+            if len(sent_tag[0]) >50:
                 break
             sent_to_idx.append(torch.tensor(token_pipeline(sent_tag[0])))
             tags_to_idx.append(torch.tensor(pos_pipeline(sent_tag[1])))
@@ -64,7 +64,7 @@ class myDataset(Dataset):
     def __getitem__(self, index):
         return self.samples_to_idx[index], self.labels_to_idx[index]
 
-validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid")
-                                        ,shuffle=False
-                                        ,batch_size=16)
+# validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid")
+#                                         ,shuffle=False
+#                                         ,batch_size=16)
 

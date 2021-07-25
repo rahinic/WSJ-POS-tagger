@@ -14,8 +14,8 @@ import torch.optim as optim
 print("="*100)
 print("01. Preparing train/test datasets:")
 
-train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=256, shuffle=True)
-test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=256, shuffle=True)
+train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=32, shuffle=True)
+test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=32, shuffle=True)
 # validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid"),batch_size=16,shuffle=True)
 print("datasets ready!")
 print("="*100)
@@ -28,11 +28,11 @@ word_to_idx, idx_to_word, pos_to_idx, idx_to_pos = ds.vocabulary()
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 150
 HIDDEN_DIM = 150
-NUM_LAYERS = 3
-NUM_OF_CLASSES = len(pos_to_idx)
+NUM_LAYERS = 2
+NUM_OF_CLASSES = len(pos_to_idx)+1
 N_EPOCHS = 40
 LEARNING_RATE = 0.01
-BATCH_SIZE = 256
+BATCH_SIZE = 32
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
 ##################################### 03. NN Model  ########################################
@@ -42,7 +42,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.1,
+                    dropout=0.2,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")

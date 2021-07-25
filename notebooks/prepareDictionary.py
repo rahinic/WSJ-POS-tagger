@@ -36,8 +36,8 @@ class PennTreeBankDictionary():
         
         print("preparing look-up dictionaries")
         words_in_corpus, pos_tags_in_corpus = self.tokens_and_tags()
-        words_in_corpus.append('PADD')
-        pos_tags_in_corpus.append('PADD')
+        words_in_corpus.append('PADDING')
+        pos_tags_in_corpus.append('PADDING')
         word_to_idx, pos_to_idx = {}, {}
         idx_to_word, idx_to_pos = {}, {} # for reverse look-up
 

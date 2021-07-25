@@ -39,7 +39,7 @@ class myDataset(Dataset):
         sent_to_idx, tags_to_idx = [], []
         for sent_tag in sentences_and_tags:
             if len(sent_tag[0]) >50:
-                break
+                continue
             sent_to_idx.append(torch.tensor(token_pipeline(sent_tag[0])))
             tags_to_idx.append(torch.tensor(pos_pipeline(sent_tag[1])))
 

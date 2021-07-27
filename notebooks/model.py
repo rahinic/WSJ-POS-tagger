@@ -17,20 +17,22 @@ class RNNPOSTagger(nn.Module):
         super(RNNPOSTagger, self).__init__()
 
         self.embedding = nn.Embedding(num_embeddings=vocabulary_size,
-                                    embedding_dim=embedding_dimension)
+                                    embedding_dim=embedding_dimension,
+                                    padding_idx=45)
 
         self.lstm = nn.LSTM(embedding_dimension,
                             hidden_dimension,
                             num_of_layers,
                             dropout=dropout,
-                            batch_first=True)
-                            # bidirectional=True)
+                            batch_first=True,
+                            bidirectional=True)
 
-        self.fc = nn.Linear(hidden_dimension, output_dimension)
+        self.fc = nn.Linear(hidden_dimension*2, output_dimension)
 
-        self.activation_fn = nn.Tanh()
+        # self.activation_fn = nn.Tanh()
+        self.activation_fn = nn.LogSoftmax(dim=1)
         
-
+        # self.dropout = nn.Dropout(dropout)
 
     def forward(self, sample):
 
@@ -54,5 +56,5 @@ class RNNPOSTagger(nn.Module):
         #activation function
         outputs=self.activation_fn(dense_output)
  
-        # return outputs
-        return dense_output
+        return outputs
+        # return dense_output

@@ -15,7 +15,7 @@ class myDataset(Dataset):
 
     def file_parser(self,filename) -> Tuple[List,List]:
 
-        filepath = "C:/Users/rahin/projects/WSJ-POS-tagger/data/processed/"+filename+'.pklz'
+        filepath = "data/processed/"+filename+'.pklz'
         samples_with_labels = []
         file = gzip.open(filepath,'rb')
         samples_with_labels = pickle.load(file)

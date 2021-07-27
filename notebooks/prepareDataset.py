@@ -49,9 +49,9 @@ class PennTreeBankDataset():
 
         for final,pos,raw in zip(list_of_files,list_of_files_tags,list_of_datasets):
             # print(f"Processing: {raw} => {final} \t {pos}")
-            dataset = self.preprocessing(file="C:/Users/rahin/projects/WSJ-POS-tagger/data/corpus/"+str(raw))
-
-            with gzip.open('C:/Users/rahin/projects/WSJ-POS-tagger/data/processed/' +str(final), 'wb') as f:
+            dataset = self.preprocessing(file="data/corpus/"+str(raw))
+            # print(len(dataset))
+            with gzip.open('data/processed/' +str(final), 'wb') as f:
                 pickle.dump(dataset, f)
                 f.close()
 

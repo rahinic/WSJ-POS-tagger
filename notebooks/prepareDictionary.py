@@ -5,9 +5,9 @@ class PennTreeBankDictionary():
     def load_corpus(self):
 
         print("preparing train/test/valid datasets")
-        valid_ds = ds.preprocessing(file="C:/Users/rahin/projects/WSJ-POS-tagger/data/corpus/22.auto.clean.txt")
-        test_ds = ds.preprocessing(file="C:/Users/rahin/projects/WSJ-POS-tagger/data/corpus/23.auto.clean.txt")
-        train_ds = ds.preprocessing(file="C:/Users/rahin/projects/WSJ-POS-tagger/data/corpus/02-21.10way.clean.txt")
+        valid_ds = ds.preprocessing(file="data/corpus/22.auto.clean.txt")
+        test_ds = ds.preprocessing(file="data/corpus/23.auto.clean.txt")
+        train_ds = ds.preprocessing(file="data/corpus/02-21.10way.clean.txt")
         complete_ds = valid_ds + test_ds + train_ds
         print("done")
 

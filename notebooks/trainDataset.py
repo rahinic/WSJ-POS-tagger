@@ -14,8 +14,8 @@ import torch.optim as optim
 print("="*100)
 print("01. Preparing train/test datasets:")
 
-train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=32, shuffle=True)
-test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=32, shuffle=True)
+train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=16, shuffle=True)
+test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=16, shuffle=True)
 # validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid"),batch_size=16,shuffle=True)
 print("datasets ready!")
 print("="*100)
@@ -26,13 +26,13 @@ word_to_idx, idx_to_word, pos_to_idx, idx_to_pos = ds.vocabulary()
 
 # read this seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html --> for understanding embedding dimension and output dimension  
 VOCAB_SIZE = len(word_to_idx)+1
-EMBED_DIM = 150
-HIDDEN_DIM = 150
+EMBED_DIM = 100
+HIDDEN_DIM = 64
 NUM_LAYERS = 2
-NUM_OF_CLASSES = len(pos_to_idx)+1
-N_EPOCHS = 40
-LEARNING_RATE = 0.01
-BATCH_SIZE = 32
+NUM_OF_CLASSES = len(pos_to_idx)
+N_EPOCHS = 10
+LEARNING_RATE = 0.1
+BATCH_SIZE = 16
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
 ##################################### 03. NN Model  ########################################
@@ -42,7 +42,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.2,
+                    dropout=0.25,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")
@@ -52,17 +52,26 @@ print("="*100)
 ############################# 04. Optimizer and Loss  ####################################
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') 
+# optimizer = optim.SGD(model.parameters(), lr=LEARNING_RATE)
 optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
-criterion = nn.CrossEntropyLoss()
+# criterion = nn.CrossEntropyLoss(ignore_index=45)
+criterion = nn.NLLLoss(ignore_index=45)
 
 
 #define metric
-def binary_accuracy(preds, y):
+def train_accuracy(preds, y):
     
     predsx = preds.permute(0,2,1) #reshape
     predsx2 = torch.argmax(predsx, dim=2) #find POS index with max value for each token
-    correct = (predsx2 == y)
-    acc = correct.sum() / len(preds)
+
+    for pred,act in zip(predsx2.tolist()[0],y.tolist()[0]):
+        counter = 0
+        if pred == act:
+            counter = counter+1
+        
+    # correct = (predsx2 == y)
+    # acc = correct.sum() / len(preds)
+    acc = counter/len(preds)
     # print(type(acc))
 
     return acc
@@ -74,13 +83,14 @@ criterion = criterion.to(device)
 ############################## 05. NN Model Train Definition #############################
 
 def train(model, dataset, optimizer, criterion):
-    #log_interval = 500
-    start_time = time.time()
+
+    t = time.localtime()
+    start_time = time.strftime("%H:%M:%S", t)
     print(start_time)
 
     epoch_loss = 0
     epoch_accuracy = 0
-    epoch_dataset_length_total = 0
+
     epoch_dataset_length.append(len(dataset))
 
     model.train()
@@ -93,15 +103,15 @@ def train(model, dataset, optimizer, criterion):
        optimizer.zero_grad()
 
        predicted_labels = model(current_samples).permute(0,2,1)
-       
+      
        loss = criterion(predicted_labels, current_labels)
-       accuracy = binary_accuracy(predicted_labels, current_labels)
+       accuracy = train_accuracy(predicted_labels, current_labels)
 
        loss.backward()
        optimizer.step()
 
        epoch_loss += loss.item()
-       epoch_accuracy += accuracy.item()
+       epoch_accuracy += accuracy
 
     return epoch_loss/len(dataset), epoch_accuracy/sum(epoch_dataset_length)
 
@@ -109,7 +119,11 @@ def train(model, dataset, optimizer, criterion):
 ################################ 06. NN Model Eval Definition ############################
 def evaluate(model, dataset, criterion):
     
-    start_time = time.time()
+    # start_time = time.time()
+    # print(start_time)
+
+    t = time.localtime()
+    start_time = time.strftime("%H:%M:%S", t)
     print(start_time)
 
     epoch_loss = 0
@@ -125,10 +139,10 @@ def evaluate(model, dataset, criterion):
             predicted_labels = model(current_samples).permute(0,2,1)
 
             loss = criterion(predicted_labels, current_labels)
-            accuracy = binary_accuracy(predicted_labels, current_labels)
+            accuracy = train_accuracy(predicted_labels, current_labels)
 
             epoch_loss += loss.item()
-            epoch_accuracy += accuracy.item()
+            epoch_accuracy += accuracy
 
     return epoch_loss/len(dataset), epoch_accuracy/len(dataset)
 
@@ -158,5 +172,6 @@ for epoch in range(N_EPOCHS):
     print(f'\t Val. Loss: {valid_loss:.3f} |  Val. Acc: {valid_acc*100:.2f}%')
     print("-------------------------------------------------------------------")
 
-modelpath = "C:/Users/rahin/projects/WSJ-POS-tagger/notebooks"
-torch.save(model.state_dict(), os.path.join(modelpath, "PennPOSmodel.pth"))
+# modelpath = "notebooks"
+# torch.save(model.state_dict(), os.path.join(modelpath, "PennPOSmodel.pth"))
+torch.save(model.state_dict(),"notebooks/PennPOSmodel.pth")

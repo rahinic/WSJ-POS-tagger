@@ -17,14 +17,23 @@ word_to_idx, idx_to_word, pos_to_idx, idx_to_pos = ds.vocabulary()
 validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid"),batch_size=16,shuffle=False)
 
 # read this seq2seq model: https://pytorch.org/tutorials/intermediate/seq2seq_translation_tutorial.html --> for understanding embedding dimension and output dimension  
+# VOCAB_SIZE = len(word_to_idx)+1
+# EMBED_DIM = 100
+# HIDDEN_DIM = 64
+# NUM_LAYERS = 1
+# NUM_OF_CLASSES = len(pos_to_idx)+1
+# N_EPOCHS = 5
+# LEARNING_RATE = 0.005
+# BATCH_SIZE = 64
+
 VOCAB_SIZE = len(word_to_idx)+1
-EMBED_DIM = 150
-HIDDEN_DIM = 150
-NUM_LAYERS = 2
-NUM_OF_CLASSES = len(pos_to_idx)+1
-N_EPOCHS = 40
-LEARNING_RATE = 0.01
-BATCH_SIZE = 32
+EMBED_DIM = 100
+HIDDEN_DIM = 128
+NUM_LAYERS = 1
+NUM_OF_CLASSES = len(pos_to_idx)
+N_EPOCHS = 10
+LEARNING_RATE = 0.02
+BATCH_SIZE = 128
 
 print(f"Our vocab size to the model is therefore: {VOCAB_SIZE}")
 ################################### 02. NN Model  ########################################
@@ -34,7 +43,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0.2,
+                            dropout=0,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")
@@ -77,6 +86,8 @@ def predict_full_validation_dataset(example_sentence) -> Tuple[List, List]:
 ###############################################################################################
 def predict_example(example_sentence, example_actual_labels):
 
+    
+
     # preprocessing:-
     sentence_to_token = token_pipeline(example_sentence)
     sentence_to_tensor = torch.tensor(sentence_to_token).unsqueeze(1).T
@@ -85,6 +96,7 @@ def predict_example(example_sentence, example_actual_labels):
     with torch.no_grad():
         output = model(sentence_to_tensor)
         predicted_output = torch.argmax(output, dim=2)
+        print(predicted_output)
         #-------------
         print(pos_pipeline(example_actual_labels))
         # print(predicted_output.tolist()[0][:-1])

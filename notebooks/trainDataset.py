@@ -14,8 +14,8 @@ import torch.optim as optim
 print("="*100)
 print("01. Preparing train/test datasets:")
 
-train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=16, shuffle=True)
-test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=16, shuffle=True)
+train_dataset = DataLoader(dataset=myDataset("PennTreeBankTrain"), batch_size=8, shuffle=True)
+test_dataset = DataLoader(dataset=myDataset("PennTreeBankTest"), batch_size=8, shuffle=True)
 # validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid"),batch_size=16,shuffle=True)
 print("datasets ready!")
 print("="*100)
@@ -30,9 +30,9 @@ EMBED_DIM = 100
 HIDDEN_DIM = 64
 NUM_LAYERS = 2
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 10
-LEARNING_RATE = 0.1
-BATCH_SIZE = 16
+N_EPOCHS = 5#10
+LEARNING_RATE = 0.1#0.1
+BATCH_SIZE = 128#16
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
 ##################################### 03. NN Model  ########################################

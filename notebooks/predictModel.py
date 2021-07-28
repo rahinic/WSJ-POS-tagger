@@ -28,12 +28,12 @@ validation_dataset = DataLoader(dataset=myDataset("PennTreeBankValid"),batch_siz
 
 VOCAB_SIZE = len(word_to_idx)+1
 EMBED_DIM = 100
-HIDDEN_DIM = 128
-NUM_LAYERS = 1
+HIDDEN_DIM = 64
+NUM_LAYERS = 2
 NUM_OF_CLASSES = len(pos_to_idx)
-N_EPOCHS = 10
-LEARNING_RATE = 0.02
-BATCH_SIZE = 128
+N_EPOCHS = 5
+LEARNING_RATE = 0.025#0.08
+BATCH_SIZE = 16
 
 print(f"Our vocab size to the model is therefore: {VOCAB_SIZE}")
 ################################### 02. NN Model  ########################################
@@ -43,7 +43,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                             vocabulary_size=VOCAB_SIZE,
                             hidden_dimension=HIDDEN_DIM,
                             num_of_layers=NUM_LAYERS,
-                            dropout=0,
+                            dropout=0.1,#0.25,
                             output_dimension=NUM_OF_CLASSES)
 print("----------------------------------------------------------------")
 print("Done! here is our model:")
@@ -132,3 +132,41 @@ predict_example(example_sentence=example[1],example_actual_labels=example_labels
 #########################################################################################    
 
 
+# result comparison
+all_actual_labels, all_predicted_labels = [],[] 
+
+# def pos_reverse_pipeline(x):
+#     return [idx_to_pos[idx] for idx in x]
+
+for idx, (sample,label) in enumerate(validation_dataset):
+  for sam in sample:
+    all_predicted_labels.append(predict_full_validation_dataset(sam)[1])
+  for lab in label:
+    all_actual_labels.append(pos_reverse_pipeline(lab.tolist()))
+
+
+def train_accuracy(preds, y):
+
+    # print(len(preds)) #i get 10 samples
+    accuracy_of_all_lines = []
+
+    
+    
+    for pred,act in zip(preds,y):
+        
+        counter = 0
+        
+        for itemx,itemj in zip(pred,act):
+          
+          
+          if itemx == itemj:
+              counter = counter+1
+        accuracy_of_this_line = counter/50
+
+        accuracy_of_all_lines.append(accuracy_of_this_line)
+    
+    # print(accuracy_of_all_lines)
+    acc = sum(accuracy_of_all_lines)/len(preds)
+
+    return acc*100
+print(f"Total Validation Accuracy of the mode: {train_accuracy(all_predicted_labels,all_actual_labels)}%")

@@ -24,10 +24,10 @@ class RNNPOSTagger(nn.Module):
                             hidden_dimension,
                             num_of_layers,
                             dropout=dropout,
-                            batch_first=True,
-                            bidirectional=True)
+                            batch_first=True)
+                            # bidirectional=True)
 
-        self.fc = nn.Linear(hidden_dimension*2, output_dimension)
+        self.fc = nn.Linear(hidden_dimension, output_dimension)
 
         # self.activation_fn = nn.Tanh()
         self.activation_fn = nn.LogSoftmax(dim=1)

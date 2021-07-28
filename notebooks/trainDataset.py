@@ -31,7 +31,7 @@ HIDDEN_DIM = 64
 NUM_LAYERS = 2
 NUM_OF_CLASSES = len(pos_to_idx)
 N_EPOCHS = 5#10
-LEARNING_RATE = 0.1#0.1
+LEARNING_RATE = 0.025#0.1
 BATCH_SIZE = 128#16
 
 print(f"Size of vocabulary: {VOCAB_SIZE}" + f"\tNumber of classes: {NUM_OF_CLASSES}")
@@ -42,7 +42,7 @@ model = RNNPOSTagger(embedding_dimension= EMBED_DIM,
                     vocabulary_size=VOCAB_SIZE,
                     hidden_dimension=HIDDEN_DIM,
                     num_of_layers=NUM_LAYERS,
-                    dropout=0.25,
+                    dropout=0.1,#0.25,
                     output_dimension=NUM_OF_CLASSES)
 
 print("Done! here is our model:")
@@ -57,9 +57,26 @@ optimizer = optim.Adam(model.parameters(), lr=LEARNING_RATE)
 # criterion = nn.CrossEntropyLoss(ignore_index=45)
 criterion = nn.NLLLoss(ignore_index=45)
 
+def train_accuracy(preds, y):
+    predicted_labels_dirty = preds.permute(0,2,1)
+    predicted_labels_final = torch.argmax(predicted_labels_dirty, dim=2).tolist()
+    actual_labels_final = y.tolist()
+    accuracy_of_all_lines = []
+    for predicted, actual in zip(predicted_labels_final, actual_labels_final):
+        counter = 0
+        for pred,act in zip(predicted,actual):
+            if pred == act:
+                counter = counter+1
+        accuracy_of_this_line = counter/50
+        accuracy_of_all_lines.append(accuracy_of_this_line)
+    accuracy = sum(accuracy_of_all_lines)/len(predicted_labels_final)
+
+    return accuracy
+
+
 
 #define metric
-def train_accuracy(preds, y):
+def training_accuracy(preds, y):
     
     predsx = preds.permute(0,2,1) #reshape
     predsx2 = torch.argmax(predsx, dim=2) #find POS index with max value for each token
